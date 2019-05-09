@@ -59,7 +59,7 @@ public class WeiXinUtil {
      * @param response
      */
     public void authorize(HttpServletRequest request, HttpServletResponse response) {
-        Map<String, String> data = new HashMap<>();
+
         String signature = request.getParameter("signature");
         String timestamp = request.getParameter("timestamp");
         String nonce = request.getParameter("nonce");

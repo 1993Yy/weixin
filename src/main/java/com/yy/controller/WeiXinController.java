@@ -1,5 +1,6 @@
 package com.yy.controller;
 
+import com.yy.annotation.NoAspectJ;
 import com.yy.config.Result;
 import com.yy.service.WeiXinService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ public class WeiXinController {
     private WeiXinService weiXinService;
 
     @RequestMapping("/authorize")
+    @NoAspectJ
     public void authorize(HttpServletRequest request, HttpServletResponse response){
         weiXinService.authorize(request, response);
     }

@@ -21,6 +21,16 @@ spring:
       hibernate:
         format_sql: true
         dialect:  org.hibernate.dialect.MySQL5InnoDBDialect
+  redis:
+    host: localhost
+    port: 6379
+    password:
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+    database: 2
 
 ##########################################################
 
