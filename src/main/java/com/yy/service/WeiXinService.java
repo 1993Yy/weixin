@@ -4,13 +4,13 @@ import cn.hutool.core.date.DateUtil;
 import com.yy.entity.Account;
 import com.yy.util.WeiXinUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -25,6 +25,8 @@ public class WeiXinService {
 
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private RedisTemplate redisTemplate;
     @Autowired
     private AccountService accountService;
 
@@ -50,7 +52,7 @@ public class WeiXinService {
      */
     public void scheduleUpdateToken() {
         Account account = accountService.getAccount();
-        WeiXinUtil weiXinUtil = new WeiXinUtil(account, restTemplate);
+        WeiXinUtil weiXinUtil = getWeiXinUtil();
         if (Objects.isNull(account.getExpireTime())
                 || account.getExpireTime().compareTo(DateUtil.offsetMinute(new Date(), -5)) == -1) {
             String accesstoken = weiXinUtil.getAccesstoken();
@@ -63,7 +65,7 @@ public class WeiXinService {
 //===============================================================
     private WeiXinUtil getWeiXinUtil() {
         Account account = accountService.getAccount();
-        WeiXinUtil weiXinUtil=new WeiXinUtil(account,restTemplate);
+        WeiXinUtil weiXinUtil=new WeiXinUtil(account,restTemplate,redisTemplate);
         return weiXinUtil;
     }
 }

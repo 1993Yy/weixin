@@ -1,5 +1,6 @@
 package com.yy.util;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
@@ -8,11 +9,13 @@ import com.yy.entity.Account;
 import com.yy.exception.ResultException;
 import com.yy.exception.ReturnInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
+import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,12 +27,14 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class WeiXinUtil {
+    private static final String key="qr_key";
     private Account account;
     private RestTemplate restTemplate;
-
-    public WeiXinUtil(Account account, RestTemplate restTemplate) {
+    private RedisTemplate redisTemplate;
+    public WeiXinUtil(Account account, RestTemplate restTemplate,RedisTemplate redisTemplate) {
         this.account = account;
         this.restTemplate = restTemplate;
+        this.redisTemplate=redisTemplate;
     }
 
     /**
@@ -37,8 +42,11 @@ public class WeiXinUtil {
      * @return
      */
     public Map<String,String> getQr(Integer expireTime,String senceID){
+        Map<String, String> map = existQr();
+        if (CollUtil.isNotEmpty(map)){
+            return map;
+        }
         String str;
-
         if (NumberUtil.isNumber(senceID)) {
             str = "{\"expire_seconds\": " + expireTime + ", \"action_name\": \"QR_SCENE\", \"action_info\": {\"scene\": {\"scene_id\": " + senceID + "}}}";
         }else {
@@ -51,7 +59,15 @@ public class WeiXinUtil {
         data.put("ticket",object.getString("ticket"));
         data.put("expire_seconds",object.getString("expire_seconds"));
         data.put("url",object.getString("url"));
+        redisTemplate.opsForValue().set(key,JSONObject.toJSONString(data), Duration.ofSeconds(expireTime));
         return data;
+    }
+    private Map<String,String> existQr(){
+        Object o = redisTemplate.opsForValue().get(key);
+        if (!Objects.isNull(o)){
+            return (Map<String, String>) JSONObject.parse((String)o);
+        }
+        return null;
     }
     /**
      * 认证回调
