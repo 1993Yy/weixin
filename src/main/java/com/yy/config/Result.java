@@ -19,6 +19,10 @@ public class Result<T> {
 
     private T data;
 
+    public Result(T data){
+        this.data=data;
+    }
+
     public Result(String code,String msg,T data){
         this.code=code;
         this.msg=msg;

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -29,9 +30,21 @@ public class WeiXinService {
 
     public void authorize(HttpServletRequest request, HttpServletResponse response) {
         WeiXinUtil weiXinUtil = getWeiXinUtil();
+        weiXinUtil.authorize(request, response);
 
     }
 
+    /**
+     * 获取二维码
+     * @param expireTime
+     * @param senceID
+     * @return
+     */
+    public Map<String,String> getQR(Integer expireTime,String senceID){
+        WeiXinUtil weiXinUtil = getWeiXinUtil();
+        Map<String, String> qr = weiXinUtil.getQr(expireTime, senceID);
+        return qr;
+    }
     /**
      * 定时更新token
      */
