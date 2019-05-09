@@ -1,13 +1,17 @@
 package com.yy.service;
 
+import cn.hutool.core.date.DateUtil;
 import com.yy.entity.Account;
 import com.yy.util.WeiXinUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @Package: com.yy.service
@@ -23,21 +27,30 @@ public class WeiXinService {
     @Autowired
     private AccountService accountService;
 
+    public void authorize(HttpServletRequest request, HttpServletResponse response) {
+        WeiXinUtil weiXinUtil = getWeiXinUtil();
+
+    }
+
     /**
      * 定时更新token
      */
-    public void scheduleUpdateToken(){
-        List<Account> accounts = accountService.getAllAccount();
-        accounts.forEach(a->{
-            WeiXinUtil weiXinUtil=new WeiXinUtil(a,restTemplate);
-            int compare = a.getExpireTime().compareTo(new Date());
-            if (compare==-1){
-                String accesstoken = weiXinUtil.getAccesstoken();
-                a.setAccessToken(accesstoken);
-                Account account = accountService.updateAccount(a);
+    public void scheduleUpdateToken() {
+        Account account = accountService.getAccount();
+        WeiXinUtil weiXinUtil = new WeiXinUtil(account, restTemplate);
+        if (Objects.isNull(account.getExpireTime())
+                || account.getExpireTime().compareTo(DateUtil.offsetMinute(new Date(), -5)) == -1) {
+            String accesstoken = weiXinUtil.getAccesstoken();
+            account.setAccessToken(accesstoken);
+            account.setExpireTime(DateUtil.offsetHour(new Date(), 2));
+            accountService.updateAccount(account);
 
-            }
-        });
+        }
     }
-
+//===============================================================
+    private WeiXinUtil getWeiXinUtil() {
+        Account account = accountService.getAccount();
+        WeiXinUtil weiXinUtil=new WeiXinUtil(account,restTemplate);
+        return weiXinUtil;
+    }
 }

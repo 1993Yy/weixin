@@ -2,10 +2,12 @@ package com.yy.service;
 
 import com.yy.dao.AccountDao;
 import com.yy.entity.Account;
+import com.yy.exception.ResultException;
+import com.yy.exception.ReturnInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Optional;
 
 /**
  * @Package: com.yy.service
@@ -23,8 +25,12 @@ public class AccountService {
      * 查看所有服务号
      * @return
      */
-    public List<Account> getAllAccount(){
-        return accountDao.findAll();
+    public Account getAccount(){
+        Optional<Account> account = accountDao.findById(1);
+        if (!account.isPresent()){
+            throw new ResultException(ReturnInfo.businessError.getCode(),"无可用服务号");
+        }
+        return account.get();
     }
 
     /**
