@@ -1,5 +1,6 @@
 package com.yy.service;
 
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.yy.dao.UserDao;
 import com.yy.entity.QUser;
@@ -63,6 +64,15 @@ public class UserService {
             System.out.println(execute);
             return execute;
         }
+    }
 
+    /**
+     * 获取微信logo图片
+     * @return
+     */
+    public String getHeadImg(){
+        QUser qUser=QUser.user;
+        JPAQuery<String> str = query.select(qUser.headImgUrl).from(qUser).where(qUser.role.eq("1"));
+        return str.fetchOne();
     }
 }

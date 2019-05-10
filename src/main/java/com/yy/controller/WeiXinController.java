@@ -33,8 +33,9 @@ public class WeiXinController {
 
     @GetMapping("/getQR")
     public Result getQR(@RequestParam(value = "expireTime",defaultValue = "300") Integer expireTime,
-                        @RequestParam(value = "senceID",defaultValue = "yang") String senceID){
-        return new Result(weiXinService.getQR(expireTime, senceID));
+                        @RequestParam(value = "senceID",defaultValue = "yang") String senceID,
+                        HttpServletResponse response){
+        return new Result(weiXinService.getQR(expireTime, senceID,response));
     }
 
     @GetMapping("/getMaterialBatch")
