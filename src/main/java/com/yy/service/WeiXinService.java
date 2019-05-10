@@ -1,6 +1,7 @@
 package com.yy.service;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.qrcode.QrCodeUtil;
 import cn.hutool.extra.qrcode.QrConfig;
 import com.yy.common.util.ImgUtil;
@@ -61,16 +62,22 @@ public class WeiXinService {
         String url = qr.get("url");
         try {
             String headImg = userService.getHeadImg();
-            BufferedImage read = ImageIO.read(new URL(headImg));
-            int raduis = read.getWidth() / 4;
-            read = ImgUtil.drawRadius(read, raduis);
-            read = ImgUtil.drawBoder(read, 10, raduis, Color.white);
             QrConfig config = new QrConfig();
             config.setMargin(0);
             config.setForeColor(new Color(11,217,182).getRGB());
             BufferedImage generate = QrCodeUtil.generate(url, config);
-            BufferedImage image = ImgUtil.drawLogo(generate, read);
-            ImageIO.write(image, "png", response.getOutputStream());
+            if(StrUtil.isNotBlank(headImg)){
+                BufferedImage read = ImageIO.read(new URL(headImg));
+                int raduis = read.getWidth() / 4;
+                read = ImgUtil.drawRadius(read, raduis);
+                read = ImgUtil.drawBoder(read, 10, raduis, Color.white);
+                BufferedImage image = ImgUtil.drawLogo(generate, read);
+                ImageIO.write(image, "png", response.getOutputStream());
+
+            }else {
+                ImageIO.write(generate, "png", response.getOutputStream());
+            }
+
         } catch (IOException e) {
             log.error(e.getMessage());
         }

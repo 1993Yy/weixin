@@ -55,7 +55,7 @@ public class User {
 
     private String qrSceneStr;
 
-    private String role;
+    private String role="0";
 
     @CreationTimestamp
     private Date createTime;
