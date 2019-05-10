@@ -1,9 +1,9 @@
-package com.yy.exception;
+package com.yy.common.exception;
 
 import lombok.Getter;
 
 /**
- * @Package: com.yy.exception
+ * @Package: com.yy.common.exception
  * @ClassName: ResultException
  * @Author: Created By Yy
  * @Date: 2019-05-09 14:11

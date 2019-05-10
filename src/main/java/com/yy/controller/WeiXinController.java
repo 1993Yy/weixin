@@ -1,7 +1,7 @@
 package com.yy.controller;
 
-import com.yy.annotation.NoAspectJ;
-import com.yy.config.Result;
+import com.yy.common.annotation.NoAspectJ;
+import com.yy.common.config.Result;
 import com.yy.service.WeiXinService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,5 +35,10 @@ public class WeiXinController {
     public Result getQR(@RequestParam(value = "expireTime",defaultValue = "300") Integer expireTime,
                         @RequestParam(value = "senceID",defaultValue = "yang") String senceID){
         return new Result(weiXinService.getQR(expireTime, senceID));
+    }
+
+    @GetMapping("/getMaterialBatch")
+    public Result getMaterialBatch(){
+        return new Result(weiXinService.getMaterialBatch());
     }
 }

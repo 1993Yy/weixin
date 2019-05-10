@@ -1,10 +1,10 @@
-package com.yy.config;
+package com.yy.common.config;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @Package: com.yy.config
+ * @Package: com.yy.common.config
  * @ClassName: Result
  * @Author: Created By Yy
  * @Date: 2019-05-09 14:36

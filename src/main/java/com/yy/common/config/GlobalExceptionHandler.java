@@ -1,13 +1,13 @@
-package com.yy.config;
+package com.yy.common.config;
 
-import com.yy.exception.ResultException;
+import com.yy.common.exception.ResultException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * @Package: com.yy.config
+ * @Package: com.yy.common.config
  * @ClassName: ExceptionHandler
  * @Author: Created By Yy
  * @Date: 2019-05-09 14:34
@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler
+    @ExceptionHandler(value = ResultException.class)
     public Result resultExceptionHandler(HttpServletRequest request,Exception ex){
         ResultException resultException=(ResultException)ex;
         Result result=new Result();

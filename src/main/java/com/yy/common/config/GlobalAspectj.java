@@ -1,7 +1,7 @@
-package com.yy.config;
+package com.yy.common.config;
 
 import com.alibaba.fastjson.JSON;
-import com.yy.exception.ReturnInfo;
+import com.yy.common.exception.ReturnInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -13,12 +13,11 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
 /**
- * @Package: com.yy.config
+ * @Package: com.yy.common.config
  * @ClassName: GlobalAspectj
  * @Author: Created By Yy
  * @Date: 2019-05-09 17:11
@@ -28,7 +27,7 @@ import java.util.List;
 @Slf4j
 public class GlobalAspectj {
 
-    @Pointcut("execution(* com.yy.controller.*.*(..)) && !@annotation(com.yy.annotation.NoAspectJ)")
+    @Pointcut("execution(* com.yy.controller.*.*(..)) && !@annotation(com.yy.common.annotation.NoAspectJ)")
     public void controllerAspect(){
 
     }

@@ -1,7 +1,7 @@
-package com.yy.exception;
+package com.yy.common.exception;
 
 /**
- * @Package: com.yy.exception
+ * @Package: com.yy.common.exception
  * @ClassName: ReturnInfo
  * @Author: Created By Yy
  * @Date: 2019-05-09 14:25

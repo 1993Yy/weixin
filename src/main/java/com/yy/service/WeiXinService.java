@@ -2,7 +2,7 @@ package com.yy.service;
 
 import cn.hutool.core.date.DateUtil;
 import com.yy.entity.Account;
-import com.yy.util.WeiXinUtil;
+import com.yy.common.util.WeiXinUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -29,6 +29,8 @@ public class WeiXinService {
     private RedisTemplate redisTemplate;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private UserService userService;
 
     public void authorize(HttpServletRequest request, HttpServletResponse response) {
         WeiXinUtil weiXinUtil = getWeiXinUtil();
@@ -62,10 +64,20 @@ public class WeiXinService {
 
         }
     }
+
+    /**
+     * 获取素材
+     * @return
+     */
+    public Map<String,Object> getMaterialBatch(){
+        WeiXinUtil weiXinUtil = getWeiXinUtil();
+        Map<String, Object> image = weiXinUtil.getMaterialBatch("image", 0, 1);
+        return image;
+    }
 //===============================================================
     private WeiXinUtil getWeiXinUtil() {
         Account account = accountService.getAccount();
-        WeiXinUtil weiXinUtil=new WeiXinUtil(account,restTemplate,redisTemplate);
+        WeiXinUtil weiXinUtil=new WeiXinUtil(account,restTemplate,redisTemplate,userService);
         return weiXinUtil;
     }
 }

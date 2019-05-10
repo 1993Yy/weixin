@@ -1,7 +1,7 @@
-package com.yy.util;
+package com.yy.common.bean;
 
 /**
- * @Package: com.yy.util
+ * @Package: com.yy.common.util
  * @ClassName: WeiXinUrl
  * @Author: Created By Yy
  * @Date: 2019-05-09 13:56
@@ -20,4 +20,8 @@ public class WeiXinUrl {
      * 获取用户信息
      */
     public static String userUrl_get="https://api.weixin.qq.com/cgi-bin/user/info?access_token=TOKEN&openid=OPENID&lang=zh_CN";
+    /**
+     * 获取素材
+     */
+    public static String materialBatchUrl_post  ="https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token=ACCESS_TOKEN";
 }
