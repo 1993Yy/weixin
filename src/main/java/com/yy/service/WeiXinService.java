@@ -67,6 +67,7 @@ public class WeiXinService {
             read = ImgUtil.drawBoder(read, 10, raduis, Color.white);
             QrConfig config = new QrConfig();
             config.setMargin(0);
+            config.setForeColor(new Color(11,217,182).getRGB());
             BufferedImage generate = QrCodeUtil.generate(url, config);
             BufferedImage image = ImgUtil.drawLogo(generate, read);
             ImageIO.write(image, "png", response.getOutputStream());
