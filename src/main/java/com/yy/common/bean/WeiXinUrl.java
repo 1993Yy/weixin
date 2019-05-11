@@ -24,4 +24,8 @@ public class WeiXinUrl {
      * 获取素材
      */
     public static String materialBatchUrl_post  ="https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token=ACCESS_TOKEN";
+    /**
+     * 创建菜单
+     */
+    public static String menuCreateUrl_post="https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
 }

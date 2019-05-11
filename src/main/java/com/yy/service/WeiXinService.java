@@ -50,6 +50,13 @@ public class WeiXinService {
     }
 
     /**
+     * 创建菜单
+     */
+    public void createMenu(){
+        WeiXinUtil weiXinUtil = getWeiXinUtil();
+        weiXinUtil.createMenu();
+    }
+    /**
      * 获取二维码
      *
      * @param expireTime

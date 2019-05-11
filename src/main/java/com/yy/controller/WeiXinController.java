@@ -42,4 +42,10 @@ public class WeiXinController {
     public Result getMaterialBatch(){
         return new Result(weiXinService.getMaterialBatch());
     }
+
+    @GetMapping("/createMenu")
+    @NoAspectJ
+    public void createMenu(){
+        weiXinService.createMenu();
+    }
 }

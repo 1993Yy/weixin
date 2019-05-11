@@ -6,10 +6,7 @@ import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.alibaba.fastjson.JSONObject;
-import com.yy.common.bean.Event;
-import com.yy.common.bean.MsgType;
-import com.yy.common.bean.Reply;
-import com.yy.common.bean.WeiXinUrl;
+import com.yy.common.bean.*;
 import com.yy.common.exception.ResultException;
 import com.yy.common.exception.ReturnInfo;
 import com.yy.entity.Account;
@@ -27,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -409,6 +407,27 @@ public class WeiXinUtil {
         }
         return object.getString("access_token");
     }
+
+    public void createMenu(){
+        String url=WeiXinUrl.menuCreateUrl_post.replace("ACCESS_TOKEN",account.getAccessToken());
+        Menu menu=new Menu();
+        menu.setName("获取位置")
+                .setType(Menu.MenuType.location_select.name())
+                .setKey("location");
+        String data="{\"button\":["+JSONObject.toJSONString(menu)+"]}";
+        try {
+            data=new String(data.getBytes(), "ISO-8859-1");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String dataStr = restTemplate.postForObject(url,data , String.class);
+        JSONObject object = JSONObject.parseObject(dataStr);
+        if ((Integer) object.get("errcode")!=0){
+            throw new ResultException(ReturnInfo.businessError.getCode(),object.getString("errcode")+": "
+                    +object.getString("errmsg"));
+        }
+    }
+
     //=======================================================================
 
     /**
