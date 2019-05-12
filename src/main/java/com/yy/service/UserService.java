@@ -7,6 +7,8 @@ import com.yy.entity.QUser;
 import com.yy.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -35,6 +37,19 @@ public class UserService {
     @PostConstruct
     public void init(){
         query=new JPAQueryFactory(entityManager);
+    }
+
+    /**
+     * 查看用户
+     * @param pageable
+     * @param user
+     * @return
+     */
+    public Page<User> getPage(Pageable pageable, User user){
+        QUser qUser=QUser.user;
+//        Predicate predicate =qUser.nickName.eq(user.getNickName());
+        Page<User> page = userDao.findAll(/*predicate,*/ pageable);
+        return page;
     }
     /**
      * 增加用户
