@@ -43,7 +43,7 @@ public class AccountService {
      * @return
      */
     public Account getAccount(){
-        Optional<Account> account = accountDao.findById(2);
+        Optional<Account> account = accountDao.findById(1);
         if (!account.isPresent()){
             throw new ResultException(ReturnInfo.businessError.getCode(),"无可用服务号");
         }
