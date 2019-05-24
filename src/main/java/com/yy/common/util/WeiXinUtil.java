@@ -450,4 +450,39 @@ public class WeiXinUtil {
             }
         }
     }
+
+    public static void main(String[] args) {
+        String token="21_lN52_6nYXOqVwT-Z5i2XFM_afgJ1LS2jjyKy0kqIWjGy1-k6lnC4uMKmN1aRkBDvBp-TUOl6tpGXbZZWdkoZcGZsr_8H3WWqXLC5yz2ecCYhGHlInP7GTetpPIYBAZdAAAUTS";
+//        String url="https://api.weixin.qq.com/cgi-bin/menu/create?access_token="+token;
+        RestTemplate restTemplate=new RestTemplate();
+//        String json=" {" +
+//                "     \"button\":[\n" +
+//                "     {    " +
+//                "          \"type\":\"view\"," +
+//                "          \"name\":\"测试\"," +
+//                "          \"url\":\"http://baidu.com\"" +
+//                "      } " +
+//                "}";
+//        String str = restTemplate.postForObject(url, json, String.class);
+//        System.out.println(str);
+//        String url="https://api.weixin.qq.com/cgi-bin/tags/create?access_token="+token;
+//        String json="{   \"tag\" : {     \"name\" : \"显示\"   } }";
+//        String str = restTemplate.postForObject(url, json, String.class);
+//        System.out.println(str);
+//        String url="https://api.weixin.qq.com/cgi-bin/menu/addconditional?access_token="+token;
+//        String json="{ \"button\":[{\"type\": \"view\",\"name\": \"今日歌曲\", \"url\": \"http://www.miui.com\"  }], \"matchrule\": {\n" +
+//                "        \"tag_id\": \"100\"\n" +
+//                "   \n" +
+//                "    }}";
+//        String str = restTemplate.postForObject(url, json, String.class);
+//        System.out.println(str);onxMJ56n_wmXQVOBWpG9DFOKTKmY
+        String url="https://api.weixin.qq.com/cgi-bin/tags/members/batchtagging?access_token="+token;
+        String json="{   \n" +
+                "    \"openid_list\" : [    \n" +
+                "    \"onxMJ56n_wmXQVOBWpG9DFOKTKmY\"   ],   \n" +
+                "    \"tagid\" : 100\n" +
+                " }";
+        String str = restTemplate.postForObject(url, json, String.class);
+        System.out.println(str);
+    }
 }
