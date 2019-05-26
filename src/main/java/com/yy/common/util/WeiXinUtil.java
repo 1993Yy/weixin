@@ -408,15 +408,15 @@ public class WeiXinUtil {
         return object.getString("access_token");
     }
 
-    public void createMenu(){
+    /**
+     * 创建菜单
+     * @param menu
+     */
+    public void createMenu(Menu menu){
         String url=WeiXinUrl.menuCreateUrl_post.replace("ACCESS_TOKEN",account.getAccessToken());
-        Menu menu=new Menu();
-        menu.setName("获取位置")
-                .setType(Menu.MenuType.location_select.name())
-                .setKey("location");
         String data="{\"button\":["+JSONObject.toJSONString(menu)+"]}";
         try {
-            data=new String(data.getBytes(), "ISO-8859-1");
+            data=new String(data.getBytes(), "iso-8859-1");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -428,6 +428,21 @@ public class WeiXinUtil {
         }
     }
 
+    /**
+     * 查询菜单
+     * @return
+     */
+    public String getMenu(){
+        String url=WeiXinUrl.menuGetUrl_get.replace("ACCESS_TOKEN",account.getAccessToken());
+        return restTemplate.getForObject(url,String.class);
+    }
+    /**
+     * 删除菜单
+     */
+    public String delMenu(){
+        String url=WeiXinUrl.menuDelUrl_get.replace("ACCESS_TOKEN",account.getAccessToken());
+        return restTemplate.getForObject(url,String.class);
+    }
     //=======================================================================
 
     /**
@@ -451,38 +466,4 @@ public class WeiXinUtil {
         }
     }
 
-    public static void main(String[] args) {
-        String token="21_lN52_6nYXOqVwT-Z5i2XFM_afgJ1LS2jjyKy0kqIWjGy1-k6lnC4uMKmN1aRkBDvBp-TUOl6tpGXbZZWdkoZcGZsr_8H3WWqXLC5yz2ecCYhGHlInP7GTetpPIYBAZdAAAUTS";
-//        String url="https://api.weixin.qq.com/cgi-bin/menu/create?access_token="+token;
-        RestTemplate restTemplate=new RestTemplate();
-//        String json=" {" +
-//                "     \"button\":[\n" +
-//                "     {    " +
-//                "          \"type\":\"view\"," +
-//                "          \"name\":\"测试\"," +
-//                "          \"url\":\"http://baidu.com\"" +
-//                "      } " +
-//                "}";
-//        String str = restTemplate.postForObject(url, json, String.class);
-//        System.out.println(str);
-//        String url="https://api.weixin.qq.com/cgi-bin/tags/create?access_token="+token;
-//        String json="{   \"tag\" : {     \"name\" : \"显示\"   } }";
-//        String str = restTemplate.postForObject(url, json, String.class);
-//        System.out.println(str);
-//        String url="https://api.weixin.qq.com/cgi-bin/menu/addconditional?access_token="+token;
-//        String json="{ \"button\":[{\"type\": \"view\",\"name\": \"今日歌曲\", \"url\": \"http://www.miui.com\"  }], \"matchrule\": {\n" +
-//                "        \"tag_id\": \"100\"\n" +
-//                "   \n" +
-//                "    }}";
-//        String str = restTemplate.postForObject(url, json, String.class);
-//        System.out.println(str);onxMJ56n_wmXQVOBWpG9DFOKTKmY
-        String url="https://api.weixin.qq.com/cgi-bin/tags/members/batchtagging?access_token="+token;
-        String json="{   \n" +
-                "    \"openid_list\" : [    \n" +
-                "    \"onxMJ56n_wmXQVOBWpG9DFOKTKmY\"   ],   \n" +
-                "    \"tagid\" : 100\n" +
-                " }";
-        String str = restTemplate.postForObject(url, json, String.class);
-        System.out.println(str);
-    }
 }

@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.qrcode.QrCodeUtil;
 import cn.hutool.extra.qrcode.QrConfig;
+import com.yy.common.bean.Menu;
 import com.yy.common.util.ImgUtil;
 import com.yy.entity.Account;
 import com.yy.common.util.WeiXinUtil;
@@ -54,7 +55,7 @@ public class WeiXinService {
      */
     public void createMenu(){
         WeiXinUtil weiXinUtil = getWeiXinUtil();
-        weiXinUtil.createMenu();
+        weiXinUtil.createMenu(new Menu());
     }
     /**
      * 获取二维码

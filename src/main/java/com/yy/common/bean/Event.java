@@ -56,6 +56,19 @@ public class Event {
      * 点击菜单跳转链接 (注意：点击菜单弹出子菜单,不会产生上报)
      */
     private View view;
+    /**
+     * 扫码推事件的事件推送
+     */
+    private ScancodePush scancodePush;
+
+    /**
+     * 扫码推事件且弹出“消息接收中”提示框的事件推送
+     */
+    private ScancodeWaitmsg scancodeWaitmsg;
+    /**
+     * 弹出系统拍照发图的事件推送
+     */
+    private PicSysphoto picSysphoto;
 
     @Data
     @AllArgsConstructor
@@ -259,5 +272,117 @@ public class Event {
          * 事件KEY值，设置的跳转URL
          */
         private String eventKey;
+    }
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ScancodePush {//扫码推事件的事件推送
+        /**
+         * 开发者微信号
+         */
+        private String toUserName;
+        /**
+         * 发送方帐号（一个OpenID）
+         */
+        private String fromUserName;
+        /**
+         * 消息创建时间 （整型）
+         */
+        private String createTime;
+        private String msgType = "event";
+        private String event = "scancode_push";
+
+        /**
+         * 事件KEY值，由开发者在创建菜单时设定
+         */
+        private String eventKey;
+        /**
+         * 扫描信息
+         */
+        private String scanCodeInfo;
+        /**
+         * 扫描类型，一般是qrcode
+         */
+        private String scanType;
+        /**
+         * 扫描结果，即二维码对应的字符串信息
+         */
+        private String scanResult;
+    }
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ScancodeWaitmsg {//扫码推事件且弹出“消息接收中”提示框的事件推送
+        /**
+         * 开发者微信号
+         */
+        private String toUserName;
+        /**
+         * 发送方帐号（一个OpenID）
+         */
+        private String fromUserName;
+        /**
+         * 消息创建时间 （整型）
+         */
+        private String createTime;
+        private String msgType = "event";
+        private String event = "scancode_waitmsg";
+
+        /**
+         * 事件KEY值，由开发者在创建菜单时设定
+         */
+        private String eventKey;
+        /**
+         * 扫描信息
+         */
+        private String scanCodeInfo;
+        /**
+         * 扫描类型，一般是qrcode
+         */
+        private String scanType;
+        /**
+         * 扫描结果，即二维码对应的字符串信息
+         */
+        private String scanResult;
+    }
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class PicSysphoto {//弹出系统拍照发图的事件推送
+        /**
+         * 开发者微信号
+         */
+        private String toUserName;
+        /**
+         * 发送方帐号（一个OpenID）
+         */
+        private String fromUserName;
+        /**
+         * 消息创建时间 （整型）
+         */
+        private String createTime;
+        private String msgType = "event";
+        private String event = "pic_sysphoto";
+
+        /**
+         * 事件KEY值，由开发者在创建菜单时设定
+         */
+        private String eventKey;
+        /**
+         * 发送的图片信息
+         */
+        private String sendPicsInfo;
+        /**
+         * 发送的图片数量
+         */
+        private String count;
+        /**
+         * 图片列表
+         */
+        private String[] PicList;
+        /**
+         * 图片的MD5值，开发者若需要，可用于验证接收到图片
+         */
+        private String PicMd5Sum;
     }
 }

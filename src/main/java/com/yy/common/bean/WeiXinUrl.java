@@ -28,4 +28,12 @@ public class WeiXinUrl {
      * 创建菜单
      */
     public static String menuCreateUrl_post="https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
+    /**
+     * 查询菜单
+     */
+    public static String menuGetUrl_get="https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
+    /**
+     * 删除菜单
+     */
+    public static String menuDelUrl_get="https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=ACCESS_TOKEN";
 }
