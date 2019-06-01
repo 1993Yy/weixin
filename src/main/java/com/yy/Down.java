@@ -3,6 +3,7 @@ package com.yy;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.http.HttpUtil;
+import com.alibaba.fastjson.JSONObject;
 
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -24,7 +25,9 @@ public class Down {
         params.put("session",IdUtil.simpleUUID());
         params.put("question","你傻逼");
         String s = HttpUtil.get(url, getSign(params));
-        System.out.println(s);
+        JSONObject object = JSONObject.parseObject(s);
+        Map data = (Map) object.get("data");
+        System.out.println(data.get("answer"));
 
 
     }
