@@ -28,6 +28,9 @@ public class Down {
         JSONObject object = JSONObject.parseObject(s);
         Map data = (Map) object.get("data");
         System.out.println(data.get("answer"));
+        System.out.println(IdUtil.randomUUID());
+
+
 
 
     }
