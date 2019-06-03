@@ -1,8 +1,10 @@
 package com.yy.common.util;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.URLUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONObject;
@@ -20,10 +22,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -41,16 +40,17 @@ public class WXUtil {
     private RedisDao redisDao;
     private UserService userService;
 
-    public WXUtil(Account account, RestTemplate restTemplate, RedisDao redisDao,UserService userService) {
+    public WXUtil(Account account, RestTemplate restTemplate, RedisDao redisDao, UserService userService) {
         this.account = account;
         this.restTemplate = restTemplate;
         this.redisDao = redisDao;
-        this.userService=userService;
+        this.userService = userService;
 
     }
 
     /**
      * 认证回调
+     *
      * @param request
      * @param response
      */
@@ -71,30 +71,30 @@ public class WXUtil {
                 String xmlInfo = XMLUtil.getXMLInfo(request);
                 String ip = IPUtil.getIp(request);
                 //解析数据
-                Event event=XMLUtil.parseXML(xmlInfo,ip);
+                Event event = XMLUtil.parseXML(xmlInfo, ip);
                 //更新用户
                 ExecutorService executor = Executors.newSingleThreadExecutor();
-                executor.submit(()->{
-                   String userInfo = getUserInfo(event.getUserOpenid());
+                executor.submit(() -> {
+                    String userInfo = getUserInfo(event.getUserOpenid());
                     userService.addOrUpdateUser(userInfo);
                 });
                 //返回消息
-                String responseXML=null;
-                Reply reply=new Reply();
-                if (Reply.MsgType.text.name().equals(event.getMsgType())){
-                    Reply.Content content=new Reply.Content();
-                    content.setContent(chat(event.getUserOpenid(),event.getText().getContent()));
+                String responseXML = null;
+                Reply reply = new Reply();
+                if (Reply.MsgType.text.name().equals(event.getMsgType())) {
+                    Reply.Content content = new Reply.Content();
+                    content.setContent(chat(event.getUserOpenid(), event.getText().getContent()));
                     reply.setContent(content);
                     responseXML = XMLUtil.getResponseXML(event, Reply.MsgType.text, reply);
                     System.out.println(responseXML);
-                }else if ("event".equals(event.getMsgType())){
-                    List<Reply.News> news=new ArrayList<>();
-                    Reply.News new1=new Reply.News();
+                } else if ("event".equals(event.getMsgType())) {
+                    List<Reply.News> news = new ArrayList<>();
+                    Reply.News new1 = new Reply.News();
                     new1.setUrl("http://baidu.com");
                     new1.setPicUrl("https://mmbiz.qpic.cn/mmbiz_png/icELdWDKoXUXdrLOsD7pT2WU0TB3M9HrrcDOGvxO1lv8ibYhAbRcTPoHJicxlfpPm8FHybYyZJTeuhYJULZpLzicnQ/0?wx_fmt=png");
                     new1.setTitle("第一个图");
                     new1.setDescription("\uD83C\uDF3A\uD83C\uDF3B\uD83C\uDF3C\uD83C\uDF37");
-                    Reply.News new2=new Reply.News();
+                    Reply.News new2 = new Reply.News();
                     new2.setUrl("http://baidu.com");
                     new2.setPicUrl("https://mmbiz.qpic.cn/mmbiz_png/icELdWDKoXUXdrLOsD7pT2WU0TB3M9HrrcDOGvxO1lv8ibYhAbRcTPoHJicxlfpPm8FHybYyZJTeuhYJULZpLzicnQ/0?wx_fmt=png");
                     new2.setTitle("\uD83C\uDE33㊗㊙");
@@ -105,7 +105,7 @@ public class WXUtil {
                     responseXML = XMLUtil.getResponseXML(event, Reply.MsgType.news, reply);
                 }
                 //输出
-                outPut(response,responseXML);
+                outPut(response, responseXML);
 
 
             }
@@ -114,68 +114,80 @@ public class WXUtil {
 
     /**
      * 获取二维码
+     *
      * @return
      */
-    public Map<String,Object> getQr(Integer expireTime, String senceID){
+    public Map<String, Object> getQr(Integer expireTime, String senceID) {
         //查看二维码是否过期
         Map<String, Object> map = existQr();
-        if (CollUtil.isNotEmpty(map)){
+        if (CollUtil.isNotEmpty(map)) {
             return map;
         }
         String str;
         if (NumberUtil.isNumber(senceID)) {
             str = "{\"expire_seconds\": " + expireTime + ", \"action_name\": \"QR_SCENE\", \"action_info\": {\"scene\": {\"scene_id\": " + senceID + "}}}";
-        }else {
+        } else {
             str = "{\"expire_seconds\": " + expireTime + ", \"action_name\": \"QR_STR_SCENE\", \"action_info\": {\"scene\": {\"scene_str\": \"" + senceID + "\"}}}";
         }
-        String url= WXURL.qr_post.replace("TOKEN",account.getAccessToken());
+        String url = WXURL.qr_post.replace("TOKEN", account.getAccessToken());
         String qr = restTemplate.postForObject(url, str, String.class);
         log.info(qr);
-        if (qr.contains("errcode")){
-            throw new ResultException(ReturnInfo.businessError.getCode(),"获取二维码出错");
+        if (qr.contains("errcode")) {
+            throw new ResultException(ReturnInfo.businessError.getCode(), "获取二维码出错");
         }
-        Map<String,Object> data=(Map)JSONObject.parse(qr);
+        Map<String, Object> data = (Map) JSONObject.parse(qr);
         redisDao.addQr(data);
         return data;
     }
 
     /**
-     *
-     *
-     *==================================================================================================================
-     *
-     *
-     *
-     *
-     *==================================================================================================================
-     *
+     * ==================================================================================================================
+     * <p>
+     * <p>
+     * <p>
+     * <p>
+     * ==================================================================================================================
      */
-    private String chat(String openid,String content){
-        Map<String, Object> params = userService.chat(content, openid);
-        String data = HttpUtil.get(WXURL.chat_post, params);
+    private String chat(String openid, String content) {
+        Map<String, Object> param = new TreeMap<>();
+        param.put("app_id", 1106958047);
+        param.put("time_stamp", System.currentTimeMillis() / 1000 + "");
+        param.put("nonce_str", IdUtil.simpleUUID());
+        param.put("session", openid);
+        param.put("question", content);
+        StringBuilder builder = new StringBuilder();
+        for (Map.Entry map : param.entrySet()) {
+            builder.append(map.getKey()).append("=");
+            builder.append(URLUtil.encode(map.getValue().toString(), "UTF-8")).append("&");
+        }
+        builder.append("app_key=").append("APPKEYmDmA9oiD9hCeHpbM");
+        String sign = SecureUtil.md5(builder.toString()).toUpperCase();
+        param.put("sign", sign);
+        String data = HttpUtil.post(WXURL.chat_post, param);
         System.out.println(data);
         Map map = (Map) JSONObject.parse(data);
         int ret = (int) map.get("ret");
-        if (ret==0){
+        if (ret == 0) {
             return (String) map.get("data");
-        }else {
-            return (String)map.get("msg");
+        } else {
+            return (String) map.get("msg");
         }
 
     }
-    private String getUserInfo(String openid){
-        String url= WXURL.user_get.replace("TOKEN",account.getAccessToken())
-                .replace("OPENID",openid);
+
+    private String getUserInfo(String openid) {
+        String url = WXURL.user_get.replace("TOKEN", account.getAccessToken())
+                .replace("OPENID", openid);
         String data = restTemplate.getForObject(url, String.class);
-        if (data.contains("errcode")){
+        if (data.contains("errcode")) {
             log.info(data);
-            throw new ResultException(ReturnInfo.businessError.getCode(),"获取信息出错");
+            throw new ResultException(ReturnInfo.businessError.getCode(), "获取信息出错");
         }
         return data;
     }
 
-    private Map<String,Object> existQr(){
-       return redisDao.getQr();
+    private Map<String, Object> existQr() {
+        return redisDao.getQr();
     }
 
     private boolean authorizeFirst(String timestamp, String nonce, Account account, String signature) {
@@ -194,6 +206,7 @@ public class WXUtil {
 
         return flag;
     }
+
     /**
      * 输出
      *

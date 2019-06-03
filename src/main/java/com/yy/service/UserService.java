@@ -4,7 +4,6 @@ import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.yy.common.util.SignUtil;
 import com.yy.dao.UserDao;
 import com.yy.entity.QUser;
 import com.yy.entity.User;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -31,8 +29,6 @@ public class UserService {
 
     @Autowired
     private EntityManager entityManager;
-    @Autowired
-    private SignUtil signUtil;
 
     private JPAQueryFactory query;
 
@@ -41,18 +37,6 @@ public class UserService {
         query=new JPAQueryFactory(entityManager);
     }
 
-    /**
-     * 智能聊天
-     * @param content
-     * @param openid
-     * @return
-     */
-    public Map<String,Object> chat(String content,String openid){
-        Map<String,Object> data=new HashMap<>();
-        data.put("session",openid);
-        data.put("question",content);
-        return signUtil.getSign(data);
-    }
     /**
      * 更新保存用户
      */
