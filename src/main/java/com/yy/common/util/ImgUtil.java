@@ -1,7 +1,5 @@
 package com.yy.common.util;
 
-import cn.hutool.extra.qrcode.QrConfig;
-
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
@@ -69,8 +67,8 @@ public class ImgUtil {
         final int qrHeight = qrImg.getHeight();
 
         //logo 长宽
-        int logoWidth = logo.getWidth()>qrWidth>>2?qrWidth>>2:logo.getWidth();
-        int logoHeight =logo.getHeight()>qrHeight>>2?qrHeight>>2:logo.getHeight();
+        int logoWidth = logo.getWidth()>qrWidth>>2?qrWidth>>3:logo.getWidth();
+        int logoHeight =logo.getHeight()>qrHeight>>2?qrHeight>>3:logo.getHeight();
 
         int logoOffsetX = (qrWidth - logoWidth) >> 1;
         int logoOffsetY = (qrHeight - logoHeight) >> 1;

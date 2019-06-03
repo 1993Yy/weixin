@@ -1,65 +1,63 @@
 package com.yy.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.util.Date;
 
 /**
  * @Package: com.yy.entity
  * @ClassName: User
  * @Author: Created By Yy
- * @Date: 2019-05-10 09:53
+ * @Date: 2019-05-31 09:34
  */
 @Data
-@Accessors(chain =true)
+@Accessors(chain = true)
 @Entity
 @Table(name = "app_user")
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    private int subscribe;
-
-    private String openID;
+@EqualsAndHashCode(callSuper = true)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class User extends BaseEntity{
 
     private String nickName;
 
-    private int sex;
+    private String openID;
+
+    private Integer subscribe;
+
+    private Integer sex;
 
     private String language;
 
-    private String city;
+    private String country;
 
     private String province;
 
-    private String country;
+    private String city;
 
-    private String headImgUrl;
+    private String headimgurl;
 
-    private Long subscribeTime;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date subscribeTime;
 
-    private String unionID;
+    private String unionid;
 
     private String remark;
 
-    private String groupID;
+    private Integer groupid;
+
+    private String tagidList;
 
     private String subscribeScene;
 
-    private String qrScene;
+    private Integer qrScene;
 
     private String qrSceneStr;
 
-    private String role="0";
-
-    @CreationTimestamp
-    private Date createTime;
-
-    @UpdateTimestamp
-    private Date updateTime;
 }

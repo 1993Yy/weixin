@@ -1,18 +1,17 @@
-package com.yy.common.config;
+package com.yy.common.bean;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @Package: com.yy.common.config
+ * @Package: com.yy.common.bean
  * @ClassName: Result
  * @Author: Created By Yy
- * @Date: 2019-05-09 14:36
+ * @Date: 2019-05-29 15:09
  */
 @Data
 @NoArgsConstructor
 public class Result<T> {
-
     private String code;
 
     private String msg;
@@ -28,5 +27,4 @@ public class Result<T> {
         this.msg=msg;
         this.data=data;
     }
-
 }

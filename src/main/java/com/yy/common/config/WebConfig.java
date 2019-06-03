@@ -14,44 +14,33 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @Package: com.yy.common.config
  * @ClassName: WebConfig
  * @Author: Created By Yy
- * @Date: 2019-05-09 13:57
+ * @Date: 2019-05-29 14:56
  */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*")
+                .allowedMethods("*")
+                .allowedHeaders("*");
+    }
 
     @Bean
     public RestTemplate restTemplate(){
         return new RestTemplate();
     }
-
     @Bean
-    RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
 
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
-
-        //使用Jackson2JsonRedisSerializer来序列化和反序列化redis的value值
-//        Jackson2JsonRedisSerializer serializer = new Jackson2JsonRedisSerializer(Object.class);
-//        FastJsonRedisSerializer serializer1=new GenericFastJsonRedisSerializer();
-//        ObjectMapper mapper = new ObjectMapper();
-//        mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-//        mapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
-//        serializer.setObjectMapper(mapper);
-
         template.setValueSerializer(new GenericFastJsonRedisSerializer());
-        //使用StringRedisSerializer来序列化和反序列化redis的key值
         template.setKeySerializer(new StringRedisSerializer());
         template.setHashKeySerializer(new StringRedisSerializer());
         template.setHashValueSerializer(new GenericFastJsonRedisSerializer());
         template.afterPropertiesSet();
         return template;
-    }
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedMethods("*")
-                .allowedHeaders("*")
-                .allowedOrigins("*");
     }
 }

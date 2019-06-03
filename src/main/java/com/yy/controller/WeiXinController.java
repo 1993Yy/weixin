@@ -1,7 +1,8 @@
 package com.yy.controller;
 
-import com.yy.common.annotation.NoAspectJ;
-import com.yy.common.config.Result;
+import com.yy.common.annotation.NoAspectj;
+import com.yy.common.bean.Result;
+import com.yy.service.UserService;
 import com.yy.service.WeiXinService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,40 +13,34 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+;
+
 /**
  * @Package: com.yy.controller
  * @ClassName: WeiXinController
  * @Author: Created By Yy
- * @Date: 2019-05-09 14:49
+ * @Date: 2019-05-31 09:43
  */
 @RestController
 @RequestMapping("/weixin")
 public class WeiXinController {
-
     @Autowired
     private WeiXinService weiXinService;
+    @Autowired
+    private UserService userService;
 
     @RequestMapping("/authorize")
-    @NoAspectJ
+    @NoAspectj
     public void authorize(HttpServletRequest request, HttpServletResponse response){
-        weiXinService.authorize(request, response);
+        weiXinService.authorize(request,response);
     }
 
-    @GetMapping("/getQR")
-    public Result getQR(@RequestParam(value = "expireTime",defaultValue = "300") Integer expireTime,
+    @GetMapping("/getQr")
+    public Result getQr(@RequestParam(value = "expireTime",defaultValue = "300") Integer expireTime,
                         @RequestParam(value = "senceID",defaultValue = "yang") String senceID,
                         HttpServletResponse response){
-        return new Result(weiXinService.getQR(expireTime, senceID,response));
+        return new Result(weiXinService.getQr(expireTime, senceID,response));
+
     }
 
-    @GetMapping("/getMaterialBatch")
-    public Result getMaterialBatch(){
-        return new Result(weiXinService.getMaterialBatch());
-    }
-
-    @GetMapping("/createMenu")
-    @NoAspectJ
-    public void createMenu(){
-        weiXinService.createMenu();
-    }
 }

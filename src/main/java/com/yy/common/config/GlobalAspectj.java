@@ -1,17 +1,21 @@
 package com.yy.common.config;
 
 import com.alibaba.fastjson.JSON;
-import com.yy.common.exception.ReturnInfo;
+import com.yy.common.annotation.NoAspectj;
+import com.yy.common.bean.Result;
+import com.yy.common.enums.ReturnInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -20,14 +24,13 @@ import java.util.List;
  * @Package: com.yy.common.config
  * @ClassName: GlobalAspectj
  * @Author: Created By Yy
- * @Date: 2019-05-09 17:11
+ * @Date: 2019-05-29 15:06
  */
 @Component
 @Aspect
 @Slf4j
 public class GlobalAspectj {
-
-    @Pointcut("execution(* com.yy.controller.*.*(..)) && !@annotation(com.yy.common.annotation.NoAspectJ)")
+    @Pointcut("execution(* com.yy.controller.*.*(..))")
     public void controllerAspect(){
 
     }
@@ -44,6 +47,13 @@ public class GlobalAspectj {
             params.add(name+": "+request.getParameter(name));
         }
         log.info("Request Args: "+ JSON.toJSONString(params));
+        String methodName = joinPoint.getSignature().getName();
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        Method method = joinPoint.getSignature().getDeclaringType().getMethod(methodName, methodSignature.getParameterTypes());
+        if (method.isAnnotationPresent(NoAspectj.class)){
+            joinPoint.proceed();
+            return null;
+        }
         Result result=(Result)joinPoint.proceed();
         result.setCode(ReturnInfo.Success.getCode());
         result.setMsg(ReturnInfo.Success.getMsg());

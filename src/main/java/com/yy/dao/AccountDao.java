@@ -7,11 +7,10 @@ import org.springframework.stereotype.Repository;
 
 /**
  * @Package: com.yy.dao
- * @ClassName: AccountDao
+ * @ClassName: Account
  * @Author: Created By Yy
- * @Date: 2019-05-09 10:15
+ * @Date: 2019-05-31 09:38
  */
 @Repository
 public interface AccountDao extends JpaRepository<Account,Integer>, QuerydslPredicateExecutor<Account> {
-
 }

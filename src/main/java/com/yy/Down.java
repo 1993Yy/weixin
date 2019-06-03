@@ -22,14 +22,13 @@ public class Down {
     public static void main(String[] args) throws Exception {
         String url="https://api.ai.qq.com/fcgi-bin/nlp/nlp_textchat";
         Map<String,Object> params=new HashMap<>();
-        params.put("session",IdUtil.simpleUUID());
+        params.put("session","onxMJ56n_wmXQVOBWpG9DFOKTKmY");
         params.put("question","你傻逼");
-        String s = HttpUtil.get(url, getSign(params));
+        Map<String, Object> sign = getSign(params);
+        String s = HttpUtil.get(url, sign);
         JSONObject object = JSONObject.parseObject(s);
         Map data = (Map) object.get("data");
         System.out.println(data.get("answer"));
-        System.out.println(IdUtil.randomUUID());
-
 
 
 

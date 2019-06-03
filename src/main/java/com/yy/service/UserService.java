@@ -1,93 +1,117 @@
 package com.yy.service;
 
+import cn.hutool.core.date.DateUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.yy.common.util.SignUtil;
 import com.yy.dao.UserDao;
 import com.yy.entity.QUser;
 import com.yy.entity.User;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @Package: com.yy.service
  * @ClassName: UserService
  * @Author: Created By Yy
- * @Date: 2019-05-10 10:13
+ * @Date: 2019-05-31 09:39
  */
 @Service
-@Slf4j
 public class UserService {
 
     @Autowired
     private UserDao userDao;
 
-    @PersistenceContext
+    @Autowired
     private EntityManager entityManager;
+    @Autowired
+    private SignUtil signUtil;
 
     private JPAQueryFactory query;
+
     @PostConstruct
-    public void init(){
+    public void setQuery(){
         query=new JPAQueryFactory(entityManager);
     }
 
     /**
-     * 查看用户
-     * @param pageable
-     * @param user
+     * 智能聊天
+     * @param content
+     * @param openid
      * @return
      */
-    public Page<User> getPage(Pageable pageable, User user){
-        QUser qUser=QUser.user;
-//        Predicate predicate =qUser.nickName.eq(user.getNickName());
-        Page<User> page = userDao.findAll(/*predicate,*/ pageable);
-        return page;
+    public Map<String,Object> chat(String content,String openid){
+        Map<String,Object> data=new HashMap<>();
+        data.put("session",openid);
+        data.put("question",content);
+        return signUtil.getSign(data);
     }
     /**
-     * 增加用户
-     * @param data
-     * @return
+     * 更新保存用户
      */
     @Transactional
-    public long addUser(Map<String,String> data){
-        QUser qUser=QUser.user;
-        User u = userDao.findByOpenID(data.get("openid"));
-        if (u ==null){
-            User user=new User();
-            user.setSubscribe(Integer.valueOf(data.get("subscribe"))).setOpenID(data.get("openid")).setNickName(data.get("nickname"))
-                    .setSex(Integer.valueOf(data.get("sex"))).setLanguage(data.get("language")).setCity(data.get("city"))
-                    .setProvince(data.get("province")).setCountry(data.get("country")).setHeadImgUrl(data.get("headimgurl"))
-                    .setSubscribeTime(Long.valueOf(data.get("subscribe_time"))).setUnionID(data.get("unionid"))
-                    .setRemark(data.get("remark")).setGroupID(data.get("groupid")).setSubscribeScene(data.get("subscribe_scene"))
-                    .setQrScene(data.get("qr_scene")).setQrSceneStr(data.get("qr_scene_str"));
-            User save = userDao.save(user);
-            return save.getId();
+    public long addOrUpdateUser(String userInfo){
+        Map data=(Map) JSONObject.parse(userInfo);
+        String openid = data.get("openid").toString();
+        boolean existUser = isExistUser(openid);
+        QUser user = QUser.user;
+        int subscribe = (int) data.get("subscribe");
+        long result=0;
+        if (existUser){
+            if (subscribe==1){
+                result =query.update(user)
+                        .set(user.nickName,(String) data.get("nickname"))
+                        .set(user.sex,(int)data.get("sex"))
+                        .set(user.city,(String)data.get("city"))
+                        .set(user.province,(String)data.get("province"))
+                        .set(user.country,(String)data.get("country"))
+                        .set(user.remark,(String)data.get("remark"))
+                        .set(user.groupid,(Integer) data.get("groupid"))
+                        .set(user.tagidList,data.get("tagid_list").toString())
+                        .set(user.subscribeScene,(String)data.get("subscribe_scene"))
+                        .set(user.qrScene,(int)data.get("qr_scene"))
+                        .set(user.subscribeTime,DateUtil.date(Long.valueOf((long) data.get("subscribe_time"))*1000))
+                        .set(user.qrSceneStr,(String)data.get("qr_scene_str"))
+                        .execute();
+            }else {
+                result= query.update(user).set(user.subscribe,0).execute();
+            }
         }else {
-            System.out.println("====");
-            long execute = query.update(qUser).where(qUser.openID.eq(data.get("openid"))).set(qUser.subscribe, Integer.valueOf(data.get("subscribe")))
-                    .set(qUser.nickName, data.get("nickname")).set(qUser.headImgUrl, data.get("headimgurl"))
-                    .set(qUser.sex, Integer.valueOf(data.get("sex"))).set(qUser.city, data.get("city"))
-                    .set(qUser.province, data.get("province")).set(qUser.country, data.get("country")).execute();
-            System.out.println(execute);
-            return execute;
+            if (subscribe==1){
+                User u = JSONObject.parseObject(userInfo, User.class);
+                u.setSubscribeTime(DateUtil.date(u.getSubscribeTime().getTime()*1000));
+                result= userDao.save(u).getId();
+            }
         }
+        return result;
     }
 
     /**
-     * 获取微信logo图片
+     * 获取logo
      * @return
      */
-    public String getHeadImg(){
-        QUser qUser=QUser.user;
-        JPAQuery<String> str = query.select(qUser.headImgUrl).from(qUser).where(qUser.role.eq("1"));
-        return str.fetchOne();
+    public String getLogo(){
+        QUser user = QUser.user;
+        JPAQuery<String> data = query.select(user.headimgurl)
+                .from(user)
+                .where(user.id.eq(1));
+        return data.fetchOne();
     }
+
+    /**
+     * 是否存在用户
+     * @return
+     */
+    private boolean isExistUser(String openid){
+        QUser user = QUser.user;
+        return userDao.exists(user.openID.eq(openid));
+    }
+
 }

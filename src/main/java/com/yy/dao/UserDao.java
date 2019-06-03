@@ -9,10 +9,8 @@ import org.springframework.stereotype.Repository;
  * @Package: com.yy.dao
  * @ClassName: UserDao
  * @Author: Created By Yy
- * @Date: 2019-05-10 10:12
+ * @Date: 2019-05-31 09:37
  */
 @Repository
 public interface UserDao extends JpaRepository<User,Integer>, QuerydslPredicateExecutor<User> {
-
-    User findByOpenID(String openID);
 }

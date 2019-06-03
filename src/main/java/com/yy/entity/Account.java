@@ -1,25 +1,29 @@
 package com.yy.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.util.Date;
 
 /**
  * @Package: com.yy.entity
  * @ClassName: Account
  * @Author: Created By Yy
- * @Date: 2019-05-09 10:14
+ * @Date: 2019-05-31 09:35
  */
 @Data
 @Accessors(chain = true)
 @Entity
-@Table(name = "app_weixin_account")
-public class Account {
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private Integer id;
+@Table(name = "app_account")
+@EqualsAndHashCode(callSuper = true)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class Account extends BaseEntity{
 
     private String appID;
 
@@ -31,10 +35,4 @@ public class Account {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date expireTime;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createTime;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updateTime;
 }
