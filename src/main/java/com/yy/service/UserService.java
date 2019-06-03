@@ -77,7 +77,7 @@ public class UserService {
                         .set(user.tagidList,data.get("tagid_list").toString())
                         .set(user.subscribeScene,(String)data.get("subscribe_scene"))
                         .set(user.qrScene,(int)data.get("qr_scene"))
-                        .set(user.subscribeTime,DateUtil.date(Long.valueOf((long) data.get("subscribe_time"))*1000))
+                        .set(user.subscribeTime,DateUtil.date(Long.valueOf(String.valueOf(data.get("subscribe_time")))*1000))
                         .set(user.qrSceneStr,(String)data.get("qr_scene_str"))
                         .execute();
             }else {
