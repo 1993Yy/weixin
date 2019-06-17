@@ -36,7 +36,7 @@ public class GlobalAspectj {
     }
 
     @Around("controllerAspect()")
-    public Result proceed(ProceedingJoinPoint joinPoint) throws Throwable{
+    public Object proceed(ProceedingJoinPoint joinPoint) throws Throwable{
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
         log.info("Request Method: "+ joinPoint.getSignature().getDeclaringTypeName()+"______"+joinPoint.getSignature().getName());
@@ -51,8 +51,8 @@ public class GlobalAspectj {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = joinPoint.getSignature().getDeclaringType().getMethod(methodName, methodSignature.getParameterTypes());
         if (method.isAnnotationPresent(NoAspectj.class)){
-            joinPoint.proceed();
-            return null;
+            Object proceed = joinPoint.proceed();
+            return proceed;
         }
         Result result=(Result)joinPoint.proceed();
         result.setCode(ReturnInfo.Success.getCode());
