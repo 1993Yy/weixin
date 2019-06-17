@@ -2,7 +2,6 @@ package com.yy.controller;
 
 import com.yy.common.annotation.NoAspectj;
 import com.yy.common.bean.Result;
-import com.yy.service.UserService;
 import com.yy.service.WeiXinService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,8 +25,6 @@ import javax.servlet.http.HttpServletResponse;
 public class WeiXinController {
     @Autowired
     private WeiXinService weiXinService;
-    @Autowired
-    private UserService userService;
 
     @RequestMapping("/authorize")
     @NoAspectj
